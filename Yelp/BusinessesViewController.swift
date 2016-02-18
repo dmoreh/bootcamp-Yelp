@@ -10,10 +10,18 @@ import UIKit
 
 class BusinessesViewController: UIViewController {
 
-    var businesses: [Business]!
+    @IBOutlet weak var businessTableView: UITableView!
+
+    var businesses: [Business]! {
+        didSet {
+            self.businessTableView.reloadData()
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        self.businessTableView.dataSource = self
 
         Business.searchWithTerm("Thai", completion: { (businesses: [Business]!, error: NSError!) -> Void in
             self.businesses = businesses
@@ -35,20 +43,20 @@ class BusinessesViewController: UIViewController {
         }
 */
     }
+}
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+extension BusinessesViewController: UITableViewDataSource {
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier("BusinessCell", forIndexPath: indexPath) as! BusinessCell
+        cell.business = self.businesses[indexPath.row]
+        return cell
     }
 
-    /*
-    // MARK: - Navigation
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        guard let businesses = self.businesses else {
+            return 0
+        }
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        return businesses.count
     }
-    */
-
 }
