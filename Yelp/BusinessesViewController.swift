@@ -22,14 +22,16 @@ class BusinessesViewController: UIViewController {
         super.viewDidLoad()
 
         self.businessTableView.dataSource = self
+        self.businessTableView.rowHeight = UITableViewAutomaticDimension
+        self.businessTableView.estimatedRowHeight = 120
 
         Business.searchWithTerm("Thai", completion: { (businesses: [Business]!, error: NSError!) -> Void in
             self.businesses = businesses
         
-            for business in businesses {
-                print(business.name!)
-                print(business.address!)
-            }
+//            for business in businesses {
+//                print(business.name!)
+//                print(business.address!)
+//            }
         })
 
 /* Example of Yelp search with more search options specified
