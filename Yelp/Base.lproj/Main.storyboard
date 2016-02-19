@@ -102,7 +102,6 @@
                                                 <constraint firstItem="u0y-9t-qVk" firstAttribute="top" secondItem="FJG-gS-ivF" secondAttribute="top" constant="8" id="x3f-2k-MGQ"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" red="1" green="0.0" blue="0.060231345870000001" alpha="1" colorSpace="calibratedRGB"/>
                                         <connections>
                                             <outlet property="addressLabel" destination="CHB-sd-Wti" id="3Tv-l7-4X0"/>
                                             <outlet property="categoriesLabel" destination="7KZ-qD-52h" id="Uah-Kh-OfX"/>
@@ -172,7 +171,6 @@
                                                     <rect key="frame" x="263" y="18" width="51" height="31"/>
                                                 </switch>
                                             </subviews>
-                                            <color key="backgroundColor" red="1" green="0.0" blue="0.060231345870000001" alpha="1" colorSpace="calibratedRGB"/>
                                             <constraints>
                                                 <constraint firstAttribute="trailingMargin" secondItem="MYB-gD-Wnu" secondAttribute="trailing" id="AIK-XP-vHz"/>
                                                 <constraint firstItem="MYB-gD-Wnu" firstAttribute="centerY" secondItem="kER-si-bbJ" secondAttribute="centerY" id="GNB-7s-c1N"/>
