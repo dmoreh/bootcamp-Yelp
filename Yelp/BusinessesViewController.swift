@@ -21,7 +21,7 @@ class BusinessesViewController: UIViewController {
         }
     }
 
-    var filters = [String: AnyObject]() {
+    var filters = Filters() {
         didSet {
             self.fetchResults()
         }
@@ -54,16 +54,19 @@ class BusinessesViewController: UIViewController {
     }
 
     private func fetchResults() {
-        let categories = self.filters["categories"] as? [String]
-
+        let categories = self.filters.categories.map { (category: [String : String]) -> String in
+            return category["code"]!
+        }
+        
         Business.searchWithTerm(
             self.searchTerm,
-            sort: nil,
+            sort: self.filters.sortBy.yelpSortMode(),
             categories: categories,
-            deals: nil) { (businesses: [Business]!, error: NSError!) -> Void in
+            deals: self.filters.dealsOnly,
+            distance: self.filters.distance.meters(),
+            completion: { (businesses: [Business]!, error: NSError!) -> Void in
                 self.businesses = businesses
-        }
-
+        })
     }
 }
 
@@ -84,7 +87,7 @@ extension BusinessesViewController: UITableViewDataSource {
 }
 
 extension BusinessesViewController: FiltersViewControllerDelegate {
-    func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String : AnyObject]) {
+    func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: Filters) {
         self.filters = filters
     }
 }

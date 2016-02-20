@@ -1,49 +1,27 @@
 //
-//  FiltersViewController.swift
+//  FiltersTableViewDataSource.swift
 //  Yelp
 //
-//  Created by Daniel Moreh on 2/18/16.
+//  Created by Daniel Moreh on 2/19/16.
 //  Copyright © 2016 Timothy Lee. All rights reserved.
 //
 
 import UIKit
 
-@objc protocol FiltersViewControllerDelegate {
-    optional func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: Filters)
-}
-
-class FiltersViewController: UIViewController {
-
-    @IBOutlet weak var tableView: UITableView!
-
-    let filters = Filters()
+// TODO: What's a better name for this class? It's both a data source and a delegate. 
+class FiltersTableViewDataSource: NSObject{
+    var filters = Filters()
     private let tableStructure: [FilterType] = [.Deals, .Distance, .SortBy, .Category]
-    weak var delegate: FiltersViewControllerDelegate?
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        self.tableView.dataSource = self
-        self.tableView.delegate = self
-    }
-
-    @IBAction func didTapCancel(sender: AnyObject) {
-        dismissViewControllerAnimated(true, completion: nil)
-    }
-
-    @IBAction func didTapSearch(sender: AnyObject) {
-        dismissViewControllerAnimated(true, completion: nil)
-        delegate?.filtersViewController?(self, didUpdateFilters: self.filters)
-    }
+    weak var tableView: UITableView!
 }
 
-extension FiltersViewController: UITableViewDataSource {
+extension FiltersTableViewDataSource: UITableViewDataSource {
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return self.tableStructure.count
     }
 
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        let filterType = self.tableStructure[section]
+        let filterType = self.tableStructure[section] 
         return filterType.rawValue
     }
 
@@ -66,7 +44,6 @@ extension FiltersViewController: UITableViewDataSource {
         switch filterType {
         case .Deals:
             let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as! SwitchCell
-            cell.delegate = self
             cell.switchLabel.text = "Offering a Deal"
             cell.onSwitch.on = self.filters.dealsOnly
             return cell
@@ -85,7 +62,6 @@ extension FiltersViewController: UITableViewDataSource {
         case .Category:
             let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as! SwitchCell
             let categoryName = Filters.allCategories()[indexPath.row]["name"]
-            cell.delegate = self
             cell.switchLabel.text = categoryName
             cell.onSwitch.on = self.filters.categories.contains({ (category: [String : String]) -> Bool in
                 return category["name"] == categoryName
@@ -95,7 +71,7 @@ extension FiltersViewController: UITableViewDataSource {
     }
 }
 
-extension FiltersViewController: UITableViewDelegate {
+extension FiltersTableViewDataSource: UITableViewDelegate {
     func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         let filterType = self.tableStructure[indexPath.section]
         switch filterType {
@@ -119,21 +95,5 @@ extension FiltersViewController: UITableViewDelegate {
         }
 
         tableView.reloadData()
-    }
-}
-
-extension FiltersViewController: SwitchCellDelegate {
-    func switchCell(switchCell: SwitchCell, didChangeValue value: Bool) {
-        let indexPath = self.tableView.indexPathForCell(switchCell)!
-        let filterType = self.tableStructure[indexPath.section]
-        switch filterType {
-        case .Deals:
-            self.filters.dealsOnly = value
-        case .Category:
-            self.filters.categories.append(Filters.allCategories()[indexPath.row])
-        case .Distance, .SortBy:
-            break
-        }
-
     }
 }
